@@ -1,5 +1,6 @@
 import { BlurFilter, Container, DisplayObject, Sprite } from "pixi.js";
 import { reelTypes } from "./main";
+import { FINISHED, STARTED, STOPING, setSpinState } from "./components/SpinRunning";
 
 type TweenType = {
     object: reelTypes,
@@ -8,34 +9,56 @@ type TweenType = {
     time: number,
     easing: (t: number) => number,
     onchange: (() => void) | null,
-    oncomplete: any
+    oncomplete: (() => void) | null
 }
+
 type TweenTypeDate = TweenType & {
     propertyBeginValue: number | BlurFilter | Container<DisplayObject> | Sprite[],
     start: number
 }
+
 const tweening: TweenTypeDate[] = [];
-let running = false;
 
 export function startSpin(reels: reelTypes[]) {
-    if (running) return;
-    running = true;
+    setSpinState(STARTED)
+    for (let i = 0; i < reels.length; i++) {
+        const target = reels[i].position + 10 + i * 5 + 300;
+        const time = 1000 + i * 600;
 
-    for (let i = 0; i < reels.length; i++) { 
-        const extra = Math.floor(Math.random() * 3);
-        const target = reels[i].position + 10 + i * 5 + extra;
-        const time = 2500 + i * 600 + extra * 600;
-
-        tweenTo(reels[i], 'position', target, time, backout(0.5), null, i === reels.length - 1 ? reelsComplete(reels) : null);
+        tweenTo(
+            reels[i],
+            'position',
+            target,
+            time,
+            backout(0.3),
+            null,
+            i === reels.length - 1 ? reelsSpinComplete : null
+        );
     }
 }
 
-function reelsComplete(reels: reelTypes[]) {
-    running = false;
+export function stopSpin(reels: reelTypes[]) {
+    setSpinState(STOPING);
+    const prevTweening = [...tweening]
+    tweening.length = 0;
 
-    if (checkForWin(reels)) {
-        console.log("You Win!");
+    for (let i = 0; i < reels.length; i++) {
+        const time = i * 200;
+        tweenTo( 
+            reels[i],
+            'position',
+            prevTweening[i].target,
+            time,
+            backout(0.2),
+            null,
+            i === reels.length - 1 ? reelsSpinComplete : null
+        );
     }
+}
+
+function reelsSpinComplete() {
+    setSpinState(FINISHED)
+    console.log('Reels completed!');
 }
 
 function tweenTo(object: TweenType['object'], property: TweenType['property'], target: TweenType['target'], time: TweenType['time'], easing: TweenType['easing'], onchange: TweenType['onchange'], oncomplete: TweenType['oncomplete']): TweenTypeDate {
@@ -65,7 +88,7 @@ export function spin() {
         const phase = Math.min(1, (now - element.start) / element.time);
 
         if (element.property === 'position' && typeof element.propertyBeginValue === 'number') {
-          element.object[element.property] = lerp(element.propertyBeginValue, element.target, element.easing(phase));
+            element.object[element.property] = lerp(element.propertyBeginValue, element.target, element.easing(phase));
         }
 
         if (element.onchange) {
@@ -78,11 +101,12 @@ export function spin() {
             }
 
             if (element.oncomplete) {
-                element.oncomplete(element);
+                element.oncomplete();
             }
 
             remove.push(element);
         }
+
     });
 
     remove.forEach(element => {
@@ -96,17 +120,4 @@ function lerp(a1: number, a2: number, t: number) {
 
 function backout(amount: number) {
     return (t: number) => (--t * t * ((amount + 1) * t + amount) + 1);
-}
-
-
-function checkForWin(reels: reelTypes[]): boolean {
-    const targetRow = 2;
-    
-    for (const reel of reels) {
-        if (reel.symbols.length <= targetRow || reel.position !== targetRow) {
-            return false;
-        }
-    }
-    
-    return true;
 }
