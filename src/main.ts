@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
-import { SpinButton } from "./components/SpinButton"
+import { ActionButton, ActionButtonProps } from "./components/ActionButton"
 import { GameContainer } from './components/GameContainer';
-import { spin, startSpin } from './functions';
+import { spin, startSpin, stopSpin } from './functions';
 
 export type reelTypes = {
     container: PIXI.Container<PIXI.DisplayObject>,
@@ -17,19 +17,21 @@ type MyLoadedAsset = {
     };
   }
 
+export const CONTAINER_WIDTH = 470;
+export const CONTAINER_HEIGHT = 350;
+export const BORDER_WIDTH = 10;
+const SYMBOL_SIZE = 130;
 const REEL_WIDTH = 180;
-const SYMBOL_SIZE = 120;
 const COLUMN_NUM =  4
-const BORDER_WIDTH = 10;
 
 const assets = {
     background: 'assets/images/background.png',
-    symbols: 'assets/symbols.json'
+    symbols: 'assets/atlasData.json'
 }
 
-const app = new PIXI.Application({
-    width: 1500,
-    height: 830,
+export const app = new PIXI.Application({
+    width: 1700,
+    height: 840,
     backgroundColor: 0x90BE6D,
     view: document.getElementById('game-canvas') as HTMLCanvasElement,
 });
@@ -46,13 +48,18 @@ backgroundSprite.tileScale.set(0.25, 0.24)
 app.stage.addChild(backgroundSprite);
 
 //Game Container
-const { container, containerWidth, containerHeight, frame } = GameContainer(app, BORDER_WIDTH)
-app.stage.addChild(container);
+const { container, frame } = GameContainer(app);
+const reels: reelTypes[] = [];
 
-//Play Button
-const { buttonSprite, buttonText } = SpinButton(containerWidth, containerHeight);
+const actionButtonProps: ActionButtonProps = {
+    containerWidth: CONTAINER_WIDTH,
+    containerHeight: CONTAINER_HEIGHT,
+    onStartSpin: () => startSpin(reels),
+    onStopSpin: () => stopSpin(reels),
+  };
+  
+const { buttonSprite, buttonText } = ActionButton(actionButtonProps);
 
-PIXI.Assets.load(assets.symbols).then((data) => onAssetsLoaded(data));
 const onAssetsLoaded = (asset: MyLoadedAsset) => {
     const slotTextures: PIXI.Texture[] = [];
     const frames = Object.keys(asset.data.frames);
@@ -61,15 +68,13 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
         slotTextures.push(PIXI.Texture.from(frame));
     }
 
-    const reels: reelTypes[] = [];
     const reelContainer = new PIXI.Container();
-
     const reelContainerWidth = REEL_WIDTH * 4;
     const reelContainerHeight = SYMBOL_SIZE * 4;
 
     reelContainer.position.set(
-        (containerWidth - reelContainerWidth) / 2 + 30,
-        (containerHeight - reelContainerHeight) / 2 + SYMBOL_SIZE
+        (CONTAINER_WIDTH - reelContainerWidth) / 2 + 30,
+        (CONTAINER_HEIGHT - reelContainerHeight) / 2 + SYMBOL_SIZE
     )
 
     for (let i = 0; i < COLUMN_NUM; i++) {
@@ -105,8 +110,8 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
     let mask = new PIXI.Graphics();
     mask.beginFill(0xffffff);
     mask.drawRect(
-        -(containerWidth - BORDER_WIDTH) / 2,
-        -(containerHeight - BORDER_WIDTH) / 2,
+        -(CONTAINER_WIDTH - BORDER_WIDTH) / 2,
+        -(CONTAINER_HEIGHT - BORDER_WIDTH) / 2,
         SYMBOL_SIZE * ( COLUMN_NUM *  2 ),
         SYMBOL_SIZE * COLUMN_NUM + 80
     );
@@ -118,10 +123,6 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
     container.addChild(reelContainer);
     container.addChild(frame);
     container.addChild(buttonSprite, buttonText);
-
-    buttonSprite.addListener('pointerdown', () => {
-        startSpin(reels)
-    });
 
     app.ticker.add((delta) => {
         reels.forEach(element => {
@@ -146,3 +147,7 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
         spin()
     });
 }
+
+app.stage.addChild(container);
+
+PIXI.Assets.load(assets.symbols).then((data) => onAssetsLoaded(data));
