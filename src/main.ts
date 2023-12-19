@@ -17,21 +17,21 @@ type MyLoadedAsset = {
     };
   }
 
-const CONTAINER_WIDTH = 400;
-const CONTAINER_HEIGHT = 300;
-const SYMBOL_SIZE = 120;
+export const CONTAINER_WIDTH = 470;
+export const CONTAINER_HEIGHT = 350;
+export const BORDER_WIDTH = 10;
+const SYMBOL_SIZE = 130;
 const REEL_WIDTH = 180;
 const COLUMN_NUM =  4
-const BORDER_WIDTH = 10;
 
 const assets = {
     background: 'assets/images/background.png',
-    symbols: 'assets/symbols.json'
+    symbols: 'assets/atlasData.json'
 }
 
-const app = new PIXI.Application({
-    width: 1500,
-    height: 830,
+export const app = new PIXI.Application({
+    width: 1700,
+    height: 840,
     backgroundColor: 0x90BE6D,
     view: document.getElementById('game-canvas') as HTMLCanvasElement,
 });
@@ -48,7 +48,7 @@ backgroundSprite.tileScale.set(0.25, 0.24)
 app.stage.addChild(backgroundSprite);
 
 //Game Container
-const { container, frame } = GameContainer(app, BORDER_WIDTH, CONTAINER_WIDTH, CONTAINER_HEIGHT);
+const { container, frame } = GameContainer(app);
 const reels: reelTypes[] = [];
 
 const actionButtonProps: ActionButtonProps = {
@@ -59,8 +59,6 @@ const actionButtonProps: ActionButtonProps = {
   };
   
 const { buttonSprite, buttonText } = ActionButton(actionButtonProps);
-
-app.stage.addChild(container);
 
 const onAssetsLoaded = (asset: MyLoadedAsset) => {
     const slotTextures: PIXI.Texture[] = [];
@@ -149,5 +147,7 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
         spin()
     });
 }
+
+app.stage.addChild(container);
 
 PIXI.Assets.load(assets.symbols).then((data) => onAssetsLoaded(data));

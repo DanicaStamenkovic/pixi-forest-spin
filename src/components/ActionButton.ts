@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { isSpinFinished, isSpinRunning, onSpinFinished, onSpinStart, onSpinStoping } from './SpinRunning';
+import { isSpinFinished, isSpinRunning, onSpinFinished, onSpinStart, onSpinStoping } from '../utils/SpinStateService';
 
 export type ActionButtonProps = {
     containerWidth: number;
@@ -31,7 +31,7 @@ export function ActionButton(props: ActionButtonProps) {
         dropShadowBlur: 5,
         dropShadowAngle: 6,
         dropShadowDistance: 0,
-        fill: ['#F5C21B', 'orange'],
+        fill: ['#eedb9b', 'orange'],
         align: 'center',
     });
 
@@ -54,7 +54,7 @@ export function ActionButton(props: ActionButtonProps) {
     })
 
     onSpinStoping(() => {
-      buttonSprite.cursor  = 'not-allowed';
+      buttonSprite.cursor  = 'progress';
     })
 
     buttonSprite.addListener('pointerdown', () => {

@@ -1,6 +1,6 @@
 import { BlurFilter, Container, DisplayObject, Sprite } from "pixi.js";
 import { reelTypes } from "./main";
-import { FINISHED, STARTED, STOPING, setSpinState } from "./components/SpinRunning";
+import { FINISHED, STARTED, STOPING, setSpinState } from "./utils/SpinStateService";
 
 type TweenType = {
     object: reelTypes,
@@ -30,7 +30,7 @@ export function startSpin(reels: reelTypes[]) {
             'position',
             target,
             time,
-            backout(0.3),
+            backout(0.2),
             null,
             i === reels.length - 1 ? reelsSpinComplete : null
         );
@@ -39,17 +39,25 @@ export function startSpin(reels: reelTypes[]) {
 
 export function stopSpin(reels: reelTypes[]) {
     setSpinState(STOPING);
+
+    // get previous tweening 
     const prevTweening = [...tweening]
+
+    // clear tweening 
     tweening.length = 0;
 
-    for (let i = 0; i < reels.length; i++) {
-        const time = i * 200;
-        tweenTo( 
+    // number of removed reels
+    const removedReelsNumber = reels.length - prevTweening.length;
+
+    for (let i = removedReelsNumber; i < reels.length; i++) {
+        const target = Math.trunc(prevTweening[i - (removedReelsNumber)].target);
+
+        tweenTo(
             reels[i],
             'position',
-            prevTweening[i].target,
-            time,
-            backout(0.2),
+            target,
+            i * 200,
+            backout(0),
             null,
             i === reels.length - 1 ? reelsSpinComplete : null
         );
@@ -57,8 +65,8 @@ export function stopSpin(reels: reelTypes[]) {
 }
 
 function reelsSpinComplete() {
+    // there should be check for win
     setSpinState(FINISHED)
-    console.log('Reels completed!');
 }
 
 function tweenTo(object: TweenType['object'], property: TweenType['property'], target: TweenType['target'], time: TweenType['time'], easing: TweenType['easing'], onchange: TweenType['onchange'], oncomplete: TweenType['oncomplete']): TweenTypeDate {
@@ -106,7 +114,6 @@ export function spin() {
 
             remove.push(element);
         }
-
     });
 
     remove.forEach(element => {
