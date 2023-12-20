@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js';
-import { CONTAINER_HEIGHT, CONTAINER_WIDTH, app, reelTypes } from '../main';
+import { CONTAINER_HEIGHT, CONTAINER_WIDTH, app } from '../main';
 
 export const SPINNER_WRAPPER = new PIXI.Container();
+const animateSymbols: PIXI.Sprite[] = []
 
 export function SpinnerAnimation(position: PIXI.Point) {
     SPINNER_WRAPPER.position.set(position.x, position.y);
@@ -29,39 +30,38 @@ export function SpinnerAnimation(position: PIXI.Point) {
     };
 }
 
-export const animateSymbols: PIXI.Sprite[] = []
-
-export function WinnerComboAnimation(winningCombos: number[][][], reels:reelTypes[]) {
-    winningCombos.forEach((combo, comboIndex) => {
-        setTimeout(() => {
-            animateSymbols.forEach((symbol) => {
-                symbol.scale.set(1);
-                symbol.pivot.set(0.5)
-            }
-            )
-            animateSymbols.length = 0
-            reels.forEach((reel, index) => {
-                const symbolCopy = [...reel.symbols];
-                symbolCopy.sort((a, b) => a.y - b.y);
-                for (let i = 0; i < 4; i++) {
-                    if (combo[i][index] === 1) {
-                        animateSymbols.push(symbolCopy[i])
-                    }
-                }
-            });
-        }, comboIndex * 2000)
-    })
-
-    setTimeout(() => {
-        animateSymbols.forEach((symbol) => symbol.scale.set(1))
-        animateSymbols.length = 0
-    }, winningCombos.length * 2000)
+let winInterval: NodeJS.Timeout | null = null
+function resetSymbols() {
+    animateSymbols.forEach(symbol => {
+        symbol.scale.set(1);
+    });
+    animateSymbols.length = 0;
 }
 
-const bounceFrequency = 0.1; 
-const bounceAmplitude = 0.3;
+export function clearWinInterval() {
+    winInterval && clearInterval(winInterval)
+    resetSymbols()
+}
+
+export function WinnerComboAnimation(winningCombos: PIXI.Sprite[][]) {
+    let comboIndex = 0;
+    const startNextSymbolAnimation = () => {
+        resetSymbols()
+        const nextIndex = (comboIndex + 1) % winningCombos.length
+        animateSymbols.push(...winningCombos[nextIndex]);
+        comboIndex++
+    }
+    // do first animation
+    startNextSymbolAnimation()
+    winInterval = setInterval(() => {
+        //pass throught winning combos and do animation
+        startNextSymbolAnimation()
+    }, 2000)
+}
 
 export function animateSymbolsTickerCallback() {
+    const bounceFrequency = 0.1; 
+    const bounceAmplitude = 0.3;
     const scaleValue = 1 + bounceAmplitude * Math.sin(bounceFrequency * app.ticker.lastTime * 0.1);
 
     animateSymbols.forEach(symbol => {

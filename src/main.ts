@@ -155,6 +155,7 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
         spin()
     });
 
+    // animation callback when combos are winning
     app.ticker.add((delta) => {
         animateSymbolsTickerCallback()
     })
