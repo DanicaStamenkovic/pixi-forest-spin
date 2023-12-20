@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { isSpinFinished, isSpinRunning, onSpinFinished, onSpinStart, onSpinStoping } from '../utils/SpinStateService';
+import { isSpinFinished, isSpinRunning, onSpinFinished, onSpinStart, onSpinStoping } from '../utils/GameStateService';
 
 export type ActionButtonProps = {
     containerWidth: number;
