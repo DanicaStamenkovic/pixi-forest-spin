@@ -1,6 +1,8 @@
 import { BlurFilter, Container, DisplayObject, Sprite } from "pixi.js";
-import { reelTypes } from "./main";
-import { FINISHED, STARTED, STOPING, setSpinState } from "./utils/SpinStateService";
+import { reelTypes } from "../main";
+import { FINISHED, STARTED, STOPING, setSpinState } from "./GameStateService";
+import { findWinningPositions } from "./WinnerChecking";
+import { WinnerComboAnimation } from "./SpinRunningAnimations";
 
 type TweenType = {
     object: reelTypes,
@@ -32,7 +34,7 @@ export function startSpin(reels: reelTypes[]) {
             time,
             backout(0.2),
             null,
-            i === reels.length - 1 ? reelsSpinComplete : null
+            i === reels.length - 1 ? () => reelsSpinComplete(reels) : null
         );
     }
 }
@@ -57,15 +59,15 @@ export function stopSpin(reels: reelTypes[]) {
             'position',
             target,
             i * 200,
-            backout(0),
+            backout(0.2),
             null,
-            i === reels.length - 1 ? reelsSpinComplete : null
+            i === reels.length - 1 ? () => reelsSpinComplete(reels) : null
         );
     }
 }
 
-function reelsSpinComplete() {
-    // there should be check for win
+function reelsSpinComplete(reels: reelTypes[]) {
+    WinnerComboAnimation(findWinningPositions(reels), reels);
     setSpinState(FINISHED)
 }
 

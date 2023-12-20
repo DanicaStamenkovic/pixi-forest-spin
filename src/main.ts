@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js';
 import { ActionButton, ActionButtonProps } from "./components/ActionButton"
 import { GameContainer } from './components/GameContainer';
-import { spin, startSpin, stopSpin } from './functions';
+import { spin, startSpin, stopSpin } from './utils';
+import { animateSymbolsTickerCallback } from './utils/SpinRunningAnimations';
 
 export type reelTypes = {
     container: PIXI.Container<PIXI.DisplayObject>,
@@ -95,11 +96,15 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
         reelColumn.filters = [reel.blur];
 
         for (let j = 0; j < COLUMN_NUM; j++) {
-            const reelSymbol = new PIXI.Sprite(slotTextures[Math.floor(Math.random() * slotTextures.length)]);
+            //TEST: Change symbolID to Math.floor(Math.random() * 2) for faster testing combinations
+            const symbolID = Math.floor(Math.random() * slotTextures.length);
+            const reelSymbol = new PIXI.Sprite(slotTextures[symbolID]);
             reelSymbol.y = j * SYMBOL_SIZE;
             reelSymbol.scale.x = reelSymbol.scale.y = Math.min(SYMBOL_SIZE / reelSymbol.width, SYMBOL_SIZE / reelSymbol.height);
             reelSymbol.x = Math.round((SYMBOL_SIZE - reelSymbol.width) / 2);
+            reelSymbol.renderId = symbolID + 1;
             reel.symbols.push(reelSymbol);
+
             reelColumn.addChild(reelSymbol);
         }
 
@@ -133,11 +138,14 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
                 const previousSymbolPosition = symbol.y;
     
                 symbol.y = ((element.position + j) % element.symbols.length) * SYMBOL_SIZE - SYMBOL_SIZE;
-    
+                
                 if (symbol.y < 0 && previousSymbolPosition > SYMBOL_SIZE) {
-                    symbol.texture = slotTextures[Math.floor(Math.random() * slotTextures.length)];
+                //TEST: Change symbolID to Math.floor(Math.random() * 2) for faster testing combinations
+                    const symbolID = Math.floor(Math.random() * slotTextures.length);
+                    symbol.texture = slotTextures[symbolID];
                     symbol.scale.x = symbol.scale.y = Math.min(SYMBOL_SIZE / symbol.texture.width, SYMBOL_SIZE / symbol.texture.height);
                     symbol.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
+                    symbol.renderId = symbolID + 1
                 }
             });
         });
@@ -146,6 +154,10 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
     app.ticker.add((delta) => {
         spin()
     });
+
+    app.ticker.add((delta) => {
+        animateSymbolsTickerCallback()
+    })
 }
 
 app.stage.addChild(container);
