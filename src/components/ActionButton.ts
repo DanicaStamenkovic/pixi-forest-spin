@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { isSpinFinished, isSpinRunning, onSpinFinished, onSpinStart, onSpinStoping } from '../utils/GameStateService';
+import { isSpinFinished, isSpinRunning, onGameWin, onSpinFinished, onSpinStart, onSpinStoping } from '../utils/GameStateService';
 
 export type ActionButtonProps = {
     containerWidth: number;
@@ -51,6 +51,11 @@ export function ActionButton(props: ActionButtonProps) {
 
     onSpinStart(() => {
       buttonText.text = 'Stop';
+    })
+
+    onGameWin(() => {
+      buttonText.text = 'WIN!';
+      buttonSprite.cursor  = 'progress';
     })
 
     onSpinStoping(() => {

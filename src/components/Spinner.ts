@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js';
 import { BORDER_WIDTH, CONTAINER_HEIGHT, CONTAINER_WIDTH } from "../main";
 import { onSpinFinished, onSpinStart, onSpinStoping } from "../utils/GameStateService";
-import { SPINNER_WRAPPER, SpinnerAnimation } from "../utils/SpinRunningAnimations";
+import { SPINNER_WRAPPER, SpinnerAnimation } from "../utils/Animations";
+import { spinSound } from '../utils/Sounds';
 
 export function Spinner(app: PIXI.Application<PIXI.ICanvas>, container: PIXI.Container<PIXI.DisplayObject>) {
     const updateSpinner = SpinnerAnimation(
@@ -17,6 +18,7 @@ export function Spinner(app: PIXI.Application<PIXI.ICanvas>, container: PIXI.Con
     onSpinStart(() => {
         SPINNER_WRAPPER.visible =  true
         app.ticker.add(updateSpinner);
+        spinSound.play()
     })
 
     onSpinStoping(() => {
