@@ -2,7 +2,7 @@ import { BlurFilter, Container, DisplayObject, Sprite } from "pixi.js";
 import { reelTypes } from "../main";
 import { FINISHED, STARTED, STOPING, WIN, setSpinState } from "./GameStateService";
 import { findWinningPositions } from "./WinnerChecking";
-import { WinnerComboAnimation, clearWinInterval } from "./SpinRunningAnimations";
+import { WinnerComboAnimation, clearWinInterval } from "./Animations";
 
 type TweenType = {
     object: reelTypes,
@@ -22,8 +22,8 @@ type TweenTypeDate = TweenType & {
 const tweening: TweenTypeDate[] = [];
 
 export function startSpin(reels: reelTypes[]) {
-    // on start spin clear combo winning animations
-    clearWinInterval();
+      // on start spin clear combo winning animations
+      clearWinInterval();
 
     setSpinState(STARTED)
     for (let i = 0; i < reels.length; i++) {
@@ -70,8 +70,17 @@ export function stopSpin(reels: reelTypes[]) {
 }
 
 function reelsSpinComplete(reels: reelTypes[]) {
-    WinnerComboAnimation(findWinningPositions(reels));
-    setSpinState(FINISHED)
+    const winningPositions = findWinningPositions(reels);
+
+    if (winningPositions.length > 0) {
+        WinnerComboAnimation(winningPositions);
+        setSpinState(WIN)
+    } else {
+        setSpinState(FINISHED)
+    }
+    
+    console.log(findWinningPositions(reels))
+    
 }
 
 function tweenTo(object: TweenType['object'], property: TweenType['property'], target: TweenType['target'], time: TweenType['time'], easing: TweenType['easing'], onchange: TweenType['onchange'], oncomplete: TweenType['oncomplete']): TweenTypeDate {
