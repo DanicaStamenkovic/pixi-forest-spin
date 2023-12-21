@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@pixi/filter-drop-shadow": "^5.2.0",
+    "howler": "^2.2.4",
     "pixi.js": "^7.3.2"
   }
 }

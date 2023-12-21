@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { CONTAINER_HEIGHT, CONTAINER_WIDTH, app } from '../main';
 import { FINISHED, setSpinState } from './GameStateService';
+import { winSound } from './Sounds';
 
 export const SPINNER_WRAPPER = new PIXI.Container();
 const animateSymbols: PIXI.Sprite[] = []
@@ -54,14 +55,16 @@ export function WinnerComboAnimation(winningCombos: PIXI.Sprite[][]) {
     const startNextSymbolAnimation = () => {
         if (comboIndex == winningCombos.length) {
             setSpinState(FINISHED)
+            winSound.stop()
         }
         resetSymbols()
         const nextIndex = (comboIndex + 1) % winningCombos.length
         animateSymbols.push(...winningCombos[nextIndex]);
         comboIndex++
-
         animateSymbols.forEach((symbol) => symbolAnimation(symbol))
     }
+
+    winSound.play()
     // do first animation
     startNextSymbolAnimation()
     winInterval = setInterval(() => {

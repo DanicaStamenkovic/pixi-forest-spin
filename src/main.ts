@@ -3,6 +3,7 @@ import { ActionButton, ActionButtonProps } from "./components/ActionButton"
 import { GameContainer } from './components/GameContainer';
 import { spin, startSpin, stopSpin } from './utils';
 import { animateSymbolsTickerCallback } from './utils/Animations';
+import { backgroundSound } from './utils/Sounds';
 
 export type reelTypes = {
     container: PIXI.Container<PIXI.DisplayObject>,
@@ -137,7 +138,6 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
     
             element.symbols.forEach((symbol, j) => {
                 const previousSymbolPosition = symbol.y;
-    
                 symbol.y = ((element.position + j) % element.symbols.length) * SYMBOL_SIZE - SYMBOL_SIZE + (SYMBOL_SIZE / 2);
                 
                 if (symbol.y < 0 && previousSymbolPosition > SYMBOL_SIZE) {
@@ -166,3 +166,6 @@ const onAssetsLoaded = (asset: MyLoadedAsset) => {
 app.stage.addChild(container);
 
 PIXI.Assets.load(assets.symbols).then((data) => onAssetsLoaded(data));
+
+//import background sound
+backgroundSound.play();
