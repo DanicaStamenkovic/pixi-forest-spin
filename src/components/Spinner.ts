@@ -18,7 +18,7 @@ export function Spinner(app: PIXI.Application<PIXI.ICanvas>, container: PIXI.Con
     onSpinStart(() => {
         SPINNER_WRAPPER.visible =  true
         app.ticker.add(updateSpinner);
-        spinSound.play()
+        spinSound.play();
     })
 
     onSpinStoping(() => {

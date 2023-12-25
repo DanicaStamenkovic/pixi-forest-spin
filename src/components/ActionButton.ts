@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { isSpinFinished, isSpinRunning, onGameWin, onSpinFinished, onSpinStart, onSpinStoping } from '../utils/GameStateService';
+import { actionButtonStyle } from '../utils/Styles';
 
 export type ActionButtonProps = {
     containerWidth: number;
@@ -18,24 +19,7 @@ export function ActionButton(props: ActionButtonProps) {
         props.containerHeight + buttonSprite.height
     );
 
-    const buttonStyle:PIXI.TextStyle = new PIXI.TextStyle({
-        fontFamily: 'Ariel',
-        fontSize: 30,
-        fontWeight: '900',
-        fontStyle: 'italic',
-        letterSpacing: 5,
-        stroke: 0x663300,
-        strokeThickness: 3,
-        dropShadow: true,
-        dropShadowColor: 0x663300,
-        dropShadowBlur: 5,
-        dropShadowAngle: 6,
-        dropShadowDistance: 0,
-        fill: ['#eedb9b', 'orange'],
-        align: 'center',
-    });
-
-    const buttonText:PIXI.Text = new PIXI.Text('Start', buttonStyle );
+    const buttonText:PIXI.Text = new PIXI.Text('Start', actionButtonStyle );
     buttonText.anchor.set(0.5);
     buttonText.position.set(
         buttonSprite.x + buttonSprite.width / 2,

@@ -4,6 +4,7 @@ import { GameContainer } from './components/GameContainer';
 import { spin, startSpin, stopSpin } from './utils';
 import { animateSymbolsTickerCallback } from './utils/Animations';
 import { backgroundSound } from './utils/Sounds';
+import { Informations } from './components/informations';
 
 export type reelTypes = {
     container: PIXI.Container<PIXI.DisplayObject>,
@@ -32,8 +33,8 @@ const assets = {
 }
 
 export const app = new PIXI.Application({
-    width: 1700,
-    height: 840,
+    width: 1500,
+    height: 895,
     backgroundColor: 0x90BE6D,
     view: document.getElementById('game-canvas') as HTMLCanvasElement,
 });
@@ -48,6 +49,8 @@ const backgroundSprite = new PIXI.TilingSprite(
 
 backgroundSprite.tileScale.set(0.25, 0.24)
 app.stage.addChild(backgroundSprite);
+
+const { infoContainer } = Informations();
 
 //Game Container
 const { container, frame } = GameContainer(app);
@@ -169,3 +172,4 @@ PIXI.Assets.load(assets.symbols).then((data) => onAssetsLoaded(data));
 
 //import background sound
 backgroundSound.play();
+app.stage.addChild(infoContainer)
