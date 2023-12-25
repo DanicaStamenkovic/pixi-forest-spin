@@ -3,7 +3,7 @@ import { ActionButton, ActionButtonProps } from "./components/ActionButton"
 import { GameContainer } from './components/GameContainer';
 import { spin, startSpin, stopSpin } from './utils';
 import { animateSymbolsTickerCallback } from './utils/Animations';
-import { backgroundSound } from './utils/Sounds';
+import { backgroundSound, playSound } from './utils/Sounds';
 import { Informations } from './components/informations';
 
 export type reelTypes = {
@@ -171,5 +171,5 @@ app.stage.addChild(container);
 PIXI.Assets.load(assets.symbols).then((data) => onAssetsLoaded(data));
 
 //import background sound
-backgroundSound.play();
+playSound(backgroundSound);
 app.stage.addChild(infoContainer)
