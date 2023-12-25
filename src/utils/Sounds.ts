@@ -2,6 +2,8 @@ const {Howl} = require('howler');
 
 const context = new window.AudioContext();
 
+export let shouldPlaySounds = true;
+
 export const winSound = new Howl({ 
     src: ['./assets/sounds/win.wav'],
     loop: true,
@@ -21,3 +23,23 @@ export const backgroundSound = new Howl({
     volume: 0.3,
     context: context,
 })
+
+export const toggleSoundPlayback = () => {
+    if(shouldPlaySounds) {
+        winSound.volume(0);
+        backgroundSound.pause();
+        spinSound.volume(0);
+    } else {
+        winSound.volume(0.3);
+        backgroundSound.play();
+        spinSound.volume(0.3);
+    }
+
+    shouldPlaySounds = !shouldPlaySounds;
+};
+
+export const playSound = (sound:any) => {
+    if (shouldPlaySounds) {
+        sound.play();
+    } 
+};

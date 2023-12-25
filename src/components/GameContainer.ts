@@ -21,7 +21,7 @@ export function GameContainer( app: PIXI.Application<PIXI.ICanvas>) {
     // background
     const spinBackgroundGraphics = new PIXI.Graphics();
     spinBackgroundGraphics.beginFill(0x1d3c10);
-    spinBackgroundGraphics.lineStyle({ color: 0x582900, width: BORDER_WIDTH, alignment: 1.5 });
+    spinBackgroundGraphics.lineStyle({ color: 0x610e00, width: BORDER_WIDTH, alignment: 1.5 });
     spinBackgroundGraphics.drawRoundedRect(
         -(CONTAINER_WIDTH - BORDER_WIDTH * 2) / 2,
         -(CONTAINER_HEIGHT - BORDER_WIDTH * 2) / 2,
