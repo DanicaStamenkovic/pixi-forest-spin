@@ -21,6 +21,8 @@ export function SelectBet(options: number[], onSelect: (selectedOption: number) 
         optionText.position.set((optionBorder.width / 2) - (optionText.width / 2), (optionBorder.height / 2) - (optionText.style.lineHeight / 2))
 
         optionContainer.addChild(optionBorder, optionText);
+        optionContainer.eventMode = 'static';
+        optionContainer.cursor = 'pointer';
         optionsWrapper.addChild(optionContainer);
 
         return {
@@ -35,7 +37,6 @@ export function SelectBet(options: number[], onSelect: (selectedOption: number) 
             onSelect(option);
          }
     };
-
 
     // Position individual options
     let currentRow = 0;
@@ -53,8 +54,6 @@ export function SelectBet(options: number[], onSelect: (selectedOption: number) 
         optionContainer.container.position.set(offsetX + 15, offsetY + 20 );
         offsetX += optionContainer.container.width + 8; //spacing between options
 
-        optionContainer.container.eventMode = 'static';
-        optionContainer.container.cursor = 'pointer';
         optionContainer.container.on('pointerdown', () => selectOption(Number(optionContainer.text.text)));
     });
 

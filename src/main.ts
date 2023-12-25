@@ -5,6 +5,7 @@ import { spin, startSpin, stopSpin } from './utils';
 import { animateSymbolsTickerCallback } from './utils/Animations';
 import { backgroundSound, playSound } from './utils/Sounds';
 import { Informations } from './components/informations';
+import player from './utils/Player';
 
 export type reelTypes = {
     container: PIXI.Container<PIXI.DisplayObject>,
@@ -59,7 +60,11 @@ const reels: reelTypes[] = [];
 const actionButtonProps: ActionButtonProps = {
     containerWidth: CONTAINER_WIDTH,
     containerHeight: CONTAINER_HEIGHT,
-    onStartSpin: () => startSpin(reels),
+    onStartSpin: () => {
+        // update credit 
+        player.updateCredit();
+        startSpin(reels)
+    },
     onStopSpin: () => stopSpin(reels),
   };
   
@@ -170,6 +175,5 @@ app.stage.addChild(container);
 
 PIXI.Assets.load(assets.symbols).then((data) => onAssetsLoaded(data));
 
-//import background sound
-playSound(backgroundSound);
-app.stage.addChild(infoContainer)
+playSound(backgroundSound); //import background sound
+app.stage.addChild(infoContainer) // add informations footer tab

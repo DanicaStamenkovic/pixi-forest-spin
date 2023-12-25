@@ -4,6 +4,7 @@ import { FINISHED, STARTED, STOPING, WIN, setSpinState } from "./GameStateServic
 import { findWinningPositions } from "./WinnerChecking";
 import { WinnerComboAnimation, clearWinInterval } from "./Animations";
 import { spinSound, winSound } from "./Sounds";
+import player from "./Player";
 
 type TweenType = {
     object: reelTypes,
@@ -76,6 +77,9 @@ function reelsSpinComplete(reels: reelTypes[]) {
     const winningPositions = findWinningPositions(reels);
 
     if (winningPositions.length > 0) {
+        // calculate win amount
+        player.winningPrize(player.getBet() * Math.pow(1.5, winningPositions.length));
+
         WinnerComboAnimation(winningPositions);
         setSpinState(WIN)
     } else {
