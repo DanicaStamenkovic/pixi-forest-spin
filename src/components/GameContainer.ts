@@ -28,11 +28,12 @@ export class GameContainer extends BaseScreen {
         game.addBackground(); 
         this.spinner = new Spinner().spinner;
         this.infoContainer = new Informations();
-        this.addAssets()
         this.createContainer();
     }
 
-    private createContainer() {
+    private async createContainer() {
+        await this.addAssets();
+
         const actionButtonProps: ActionButtonProps = {
             onStartSpin: () => {
                 // update credit 
@@ -64,6 +65,15 @@ export class GameContainer extends BaseScreen {
                         styles: {
                             overflow: 'hidden',
                         }
+                    },
+                    reels: {
+                        content: this.containerReels,
+                        styles: {
+                            maxWidth: '100%',
+                            maxHeight: '100%',
+                            position: 'center',
+                            anchorY: 0.3
+                        },
                     },
                     frame: {
                         content: border,
@@ -105,40 +115,20 @@ export class GameContainer extends BaseScreen {
         });
     }
 
-    private addAssets () {
-        PIXI.Assets.load('assets/atlasData.json').then((data) => {
+    private addAssets(): Promise<void> {
+        return new Promise<void>((resolve) => {
+            PIXI.Assets.load('assets/atlasData.json').then((data) => {
+                const showReels = new Reels(data, this.reels);
+                this.containerReels = showReels.getContainer();
 
-        const showReels = new Reels(data, this.reels);
-        this.containerReels = showReels.getContainer();
-        this.containerReels.width = 620;
-        this.containerReels.height = 460;
+                app.ticker.add((delta) => {
+                    showReels.update(delta);
+                    spin();
+                    animateSymbolsTickerCallback();
+                });
 
-            this.addContent({
-            content: {
-                reels: {
-                    content: this.containerReels,
-                    styles: {
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        position: 'center',
-                        anchorY: 0.4,
-                    }
-                },
-            },
-            styles: {
-                width: '800px',
-                height: '630px',
-                maxWidth: '70%',
-                maxHeight: '70%',
-                position: 'center',
-                overflow: 'hidden'
-            }
+                resolve();
             });
-            app.ticker.add((delta) => {
-                showReels.update(delta)
-                spin();
-                animateSymbolsTickerCallback();
-            });
-        })
+        });
     }
 }
