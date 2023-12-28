@@ -14,7 +14,7 @@ export class Informations extends Layout {
         id: "InformationsTab",
         styles: {
             maxWidth: '100%',
-            maxHeight: '20%',
+            maxHeight: '100%',
             position: 'bottom',
         }});
 
@@ -26,54 +26,48 @@ export class Informations extends Layout {
 
     private createContainer() {
         this.addContent({
-            container:{
-                content: {
-                    background: {
-                        content: new PIXI.Container(),
-                    },
-                    infoContainer: {
-                        content: {
-                            background:{
-                                content: new PIXI.Container(),
-                            },
-                            credit: {
-                                content: this.credit,
-                                styles: {
-                                    position: 'left',
-                                    borderRadius: 20,
-                                }
-                            },
-                            soundContainer: {
-                                content: this.soundContainer,
-                                styles: {
-                                    position: 'center',
-                                }
-                            },
-                            bet: {
-                                content: this.bet,
-                                styles: {
-                                    position: 'right',
-                                    borderRadius: 20,
-                                }
-                            },
-                            
+            content: {
+                infoContainer: {
+                    content: {
+                        background:{
+                            content: new PIXI.Container(),
                         },
-                        styles: {
-                            width: '650px',
-                            maxWidth: '80%',
-                            height: '65%',
-                            background: 0x610e00,
-                            position: 'center',
-                            borderRadius: 15,
-                        }
+                        credit: {
+                            content: this.credit,
+                            styles: {
+                                position: 'left',
+                                borderRadius: 20,
+                            }
+                        },
+                        soundContainer: {
+                            content: this.soundContainer,
+                            styles: {
+                                position: 'center',
+                            }
+                        },
+                        bet: {
+                            content: this.bet,
+                            styles: {
+                                position: 'right',
+                                borderRadius: 20,
+                            }
+                        },    
+                    },
+                    styles: {
+                        width: '650px',
+                        maxWidth: '80%',
+                        height: '65%',
+                        background: 0x610e00,
+                        position: 'center',
+                        borderRadius: 15,
                     }
-                } ,
-                styles: {
-                    width: '100%',
-                    height: '70px',
-                    background: 0x331e01,
                 }
-            }
+            },
+            styles: {
+                width: '100%',
+                height: '70px',
+                background: 0x331e01,
+            }  
         });
     }
 }

@@ -9,22 +9,25 @@ import { ActionButton } from './ActionButton';
 import { Reels } from './Reels';
 import { animateSymbolsTickerCallback } from '../utils/Animations';
 import { game } from '../screens/Game';
+import { Informations } from './informations';
 
 export class GameContainer extends BaseScreen {
     public reels: Reel[] = [];
     private button!: PIXI.Container<PIXI.DisplayObject>;
     private containerReels!:PIXI.Container<PIXI.DisplayObject>;
     private spinner:PIXI.Container<PIXI.DisplayObject>;
+    private infoContainer!: Informations;
 
     constructor() {
         super('GameScreen', {
-            maxWidth: '80%',
-            maxHeight: '80%',
+            maxWidth: '100%',
+            maxHeight: '100%',
             position: 'center'
         });
 
-        this.spinner = new Spinner().spinner;
         game.addBackground(); 
+        this.spinner = new Spinner().spinner;
+        this.infoContainer = new Informations();
         this.addAssets()
         this.createContainer();
     }
@@ -81,35 +84,54 @@ export class GameContainer extends BaseScreen {
                 styles: {
                     width: '800px',
                     height: '600px',
-                    maxWidth: '100%',
-                    position: 'center',
+                    maxWidth: '80%',
+                    maxHeight: '80%',
+                    position: 'topCenter',
+                    marginTop: 30,
+                    marginBottom: 20,
                     background: 0x1d3c10,
                     borderRadius: 35,
                 },
-            }
+            },
+            footer: {
+                content: this.infoContainer,
+                styles: {
+                    width: '100%',
+                    height: '20%',
+                    maxWidth: '100%',
+                    position: 'bottom',
+                },
+            },
         });
     }
 
     private addAssets () {
         PIXI.Assets.load('assets/atlasData.json').then((data) => {
+
         const showReels = new Reels(data, this.reels);
         this.containerReels = showReels.getContainer();
+        this.containerReels.width = 620;
+        this.containerReels.height = 460;
 
             this.addContent({
             content: {
                 reels: {
                     content: this.containerReels,
                     styles: {
+                        maxWidth: '100%',
+                        maxHeight: '100%',
                         position: 'center',
-                        anchorY:  0.3,
+                        anchorY: 0.4,
                     }
                 },
             },
             styles: {
-                height: '600px',
-                maxWidth: '100%',
-                maxHeight: '100%',
+                width: '800px',
+                height: '630px',
+                maxWidth: '70%',
+                maxHeight: '70%',
                 position: 'center',
+                overflow: 'hidden'
             }
             });
             app.ticker.add((delta) => {

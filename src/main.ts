@@ -2,7 +2,6 @@ import * as PIXI from 'pixi.js';
 import { GameContainer } from './components/GameContainer';
 import { backgroundSound, playSound } from './utils/Sounds';
 import { game } from './screens/Game';
-import { Informations } from './components/informations';
 
 export const app = new PIXI.Application({
     width: window.innerWidth,
@@ -15,20 +14,17 @@ export const app = new PIXI.Application({
 (globalThis as any).__PIXI_APP__ = app;
 
 const gameContainer = new GameContainer();
-const infoContainer = new Informations()
 
 function resize() {
     app.renderer.resize(window.innerWidth, window.innerHeight); 
     game.resize(window.innerWidth, window.innerHeight); // Resize the game and their contents 
     gameContainer.resize(window.innerWidth, window.innerHeight); 
-    infoContainer.resize(window.innerWidth, window.innerHeight);
 }
 
 async function init() {
     // Whenever the window resizes, call the 'resize' function
     window.addEventListener('resize', resize);
     app.stage.addChild(gameContainer);
-    app.stage.addChild(infoContainer);
 
     resize();
     playSound(backgroundSound); //import background sound

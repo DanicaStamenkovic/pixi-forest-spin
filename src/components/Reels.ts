@@ -18,7 +18,6 @@ export class Reels {
             this.slotTextures.push(PIXI.Texture.from(frame));
         }
    
-        this.reelContainer.position.set(0, 0)
         this.initializeReels(reels);
     }
 
