@@ -1,3 +1,4 @@
+// We don't export this class, as we want to have only one instance of it, it is exported on the bottom of this file
 class Player {
     credit: number;
     bet: number;

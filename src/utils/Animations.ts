@@ -1,23 +1,21 @@
 import * as PIXI from 'pixi.js';
-import { CONTAINER_HEIGHT, CONTAINER_WIDTH, app } from '../main';
+import { app } from '../main';
 import { FINISHED, setSpinState } from './GameStateService';
 import { playSound, winSound } from './Sounds';
 
 export const SPINNER_WRAPPER = new PIXI.Container();
 const animateSymbols: PIXI.Sprite[] = []
 
-export function SpinnerAnimation(position: PIXI.Point) {
-    SPINNER_WRAPPER.position.set(position.x, position.y);
-
+export function SpinnerAnimation() {
     const circle = new PIXI.Graphics();
     circle.beginFill(0xff0000);
     circle.lineStyle(2, 0xffffff);
-    circle.arc(0, 0, CONTAINER_WIDTH * 2, 0, Math.PI);
-    circle.position.set(CONTAINER_WIDTH, CONTAINER_HEIGHT)
+    circle.arc(0, 0, 800 * 2, 0, Math.PI);
+    circle.position.set(800, 600)
 
     const rectangle = new PIXI.Graphics();
     rectangle.lineStyle(3, 0x6AD319, 1);
-    rectangle.drawRoundedRect(0, 0, CONTAINER_WIDTH * 2, CONTAINER_HEIGHT * 2, 50);
+    rectangle.drawRoundedRect(0, 0, 800, 600 , 50);
     rectangle.mask = circle;
 
     SPINNER_WRAPPER.addChild(rectangle, circle);
@@ -32,7 +30,7 @@ export function SpinnerAnimation(position: PIXI.Point) {
     };
 }
 
-let winInterval: NodeJS.Timeout | null = null
+let winInterval: any = null
 function resetSymbols() {
     animateSymbols.forEach(symbol => {
         const winningLight = (symbol as any)._winningLight;

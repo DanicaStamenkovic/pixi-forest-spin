@@ -24,5 +24,5 @@ export function ToggleSound() {
       toggleButton.texture = !shouldPlaySounds ? soundOnTexture : soundOffTexture;
     };
 
-    return {soundContainer};
+    return soundContainer;
 }

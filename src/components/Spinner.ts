@@ -1,33 +1,34 @@
 import * as PIXI from 'pixi.js';
-import { BORDER_WIDTH, CONTAINER_HEIGHT, CONTAINER_WIDTH } from "../main";
 import { onSpinFinished, onSpinStart, onSpinStoping } from "../utils/GameStateService";
 import { SPINNER_WRAPPER, SpinnerAnimation } from "../utils/Animations";
 import { playSound, spinSound } from '../utils/Sounds';
+import { app } from '../main';
 
-export function Spinner(app: PIXI.Application<PIXI.ICanvas>, container: PIXI.Container<PIXI.DisplayObject>) {
-    const updateSpinner = SpinnerAnimation(
-        new PIXI.Point(
-            -(CONTAINER_WIDTH - BORDER_WIDTH) / 2,
-            -(CONTAINER_HEIGHT - BORDER_WIDTH) / 2
-        )
-    );
+export class Spinner {
+    private updateSpinner;
+    public spinner: PIXI.Container<PIXI.DisplayObject>
 
-    SPINNER_WRAPPER.visible =  false
-    container.addChild(SPINNER_WRAPPER);
+    constructor() {
+        this.spinner = SPINNER_WRAPPER;
 
-    onSpinStart(() => {
-        SPINNER_WRAPPER.visible =  true
-        app.ticker.add(updateSpinner);
-        playSound(spinSound);
-    })
+        this.updateSpinner = SpinnerAnimation();
 
-    onSpinStoping(() => {
-        SPINNER_WRAPPER.visible =  false;
-        app.ticker.remove(updateSpinner);
-    })
+        this.spinner.visible = false;
 
-    onSpinFinished(() => {
-        SPINNER_WRAPPER.visible =  false;
-        app.ticker.remove(updateSpinner);
-    })
+        onSpinStart(() => {
+            this.spinner.visible = true;
+            app.ticker.add(this.updateSpinner);
+            playSound(spinSound);
+        });
+
+        onSpinStoping(() => {
+            this.spinner.visible = false;
+            app.ticker.remove(this.updateSpinner);
+        });
+
+        onSpinFinished(() => {
+            this.spinner.visible = false;
+            app.ticker.remove(this.updateSpinner);
+        });
+    }
 }

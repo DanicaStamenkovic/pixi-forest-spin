@@ -6,13 +6,12 @@ import { onGameWin, onSpinStart } from '../../utils/GameStateService';
 
 export class Credit {
     private creditValue: PIXI.Text;
-    creditTab: PIXI.Container;
+    public creditTab: PIXI.Container;
 
-    constructor(width: number, height: number) {
+    constructor() {
         const creditWrapper = new PIXI.Container()
 
-        const { tab, value } =  Tab('Credit', `${player.getCredit().toString()} €`, creditTextStyle, width, height);
-        tab.position.set(0 , (height - tab.height) / 2 + 10);
+        const { tab, value } =  Tab('Credit', `${player.getCredit().toString()} €`, creditTextStyle);
         creditWrapper.addChild(tab)
     
         this.creditValue = value;

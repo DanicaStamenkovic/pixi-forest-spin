@@ -1,40 +1,122 @@
 import * as PIXI from 'pixi.js';
-import { BORDER_WIDTH, CONTAINER_HEIGHT, CONTAINER_WIDTH } from '../main';
+import { app } from '../main';
 import { Spinner } from './Spinner';
+import { BaseScreen } from './BaseScreen';
+import { ActionButtonProps, Reel } from '../../types';
+import player from '../utils/Player';
+import { spin, startSpin, stopSpin } from '../utils';
+import { ActionButton } from './ActionButton';
+import { Reels } from './Reels';
+import { animateSymbolsTickerCallback } from '../utils/Animations';
+import { game } from '../screens/Game';
 
-export function GameContainer( app: PIXI.Application<PIXI.ICanvas>) {
-    const blurFilter = new PIXI.BlurFilter();
-    blurFilter.blur = 2;
+export class GameContainer extends BaseScreen {
+    public reels: Reel[] = [];
+    private button!: PIXI.Container<PIXI.DisplayObject>;
+    private containerReels!:PIXI.Container<PIXI.DisplayObject>;
+    private spinner:PIXI.Container<PIXI.DisplayObject>;
 
-    const container = new PIXI.Container();
-    container.position.set(
-        app.screen.width / 2 - CONTAINER_WIDTH / 2,
-        app.screen.height / 2 - CONTAINER_HEIGHT / 2
-    )
+    constructor() {
+        super('GameScreen', {
+            maxWidth: '80%',
+            maxHeight: '80%',
+            position: 'center'
+        });
 
-    const borderTexture = PIXI.Texture.from('assets/images/border.png');
-    const frame = new PIXI.Sprite(borderTexture);
-    frame.anchor.set(0.5);
-    frame.position.set(CONTAINER_WIDTH / 2, CONTAINER_HEIGHT / 2 )
-    frame.scale.set(0.54);
+        this.spinner = new Spinner().spinner;
+        game.addBackground(); 
+        this.addAssets()
+        this.createContainer();
+    }
 
-    // background
-    const spinBackgroundGraphics = new PIXI.Graphics();
-    spinBackgroundGraphics.beginFill(0x1d3c10);
-    spinBackgroundGraphics.lineStyle({ color: 0x610e00, width: BORDER_WIDTH, alignment: 1.5 });
-    spinBackgroundGraphics.drawRoundedRect(
-        -(CONTAINER_WIDTH - BORDER_WIDTH * 2) / 2,
-        -(CONTAINER_HEIGHT - BORDER_WIDTH * 2) / 2,
-        CONTAINER_WIDTH * 2 -  BORDER_WIDTH,
-        CONTAINER_HEIGHT * 2 -  BORDER_WIDTH,
-        15
-    );
-    spinBackgroundGraphics.filters = [blurFilter];
+    private createContainer() {
+        const actionButtonProps: ActionButtonProps = {
+            onStartSpin: () => {
+                // update credit 
+                player.updateCredit();
+                startSpin(this.reels)
+            },
+            onStopSpin: () => stopSpin(this.reels),
+        };
 
-    container.addChild(spinBackgroundGraphics);
+        this.button = ActionButton(actionButtonProps);
 
-    //start and stop animation
-    Spinner(app, container);
+        const border = PIXI.Sprite.from('assets/images/border.png');
+        border.width = 800;
+        border.height = 600;
 
-    return { container, frame };
+        this.addContent({
+            container: {
+                content: {
+                    spinner:{
+                        content: this.spinner,
+                        styles: {
+                            position: 'center',
+                            width: '100%',
+                            height: '100%'
+                        }
+                    },
+                    background: {
+                        content: new PIXI.Container(),
+                        styles: {
+                            overflow: 'hidden',
+                        }
+                    },
+                    frame: {
+                        content: border,
+                        styles: {
+                            anchor: 0.5,
+                            position: 'center',
+                            
+                        },
+                    },
+                    button: {
+                        content: this.button,
+                        styles: {
+                            position: 'bottomCenter',
+                            
+                        }
+                    },
+                },
+                styles: {
+                    width: '800px',
+                    height: '600px',
+                    maxWidth: '100%',
+                    position: 'center',
+                    background: 0x1d3c10,
+                    borderRadius: 35,
+                },
+            }
+        });
+    }
+
+    private addAssets () {
+        PIXI.Assets.load('assets/atlasData.json').then((data) => {
+        const showReels = new Reels(data, this.reels);
+        this.containerReels = showReels.getContainer();
+
+            this.addContent({
+            content: {
+                reels: {
+                    content: this.containerReels,
+                    styles: {
+                        position: 'center',
+                        anchorY:  0.3,
+                    }
+                },
+            },
+            styles: {
+                height: '600px',
+                maxWidth: '100%',
+                maxHeight: '100%',
+                position: 'center',
+            }
+            });
+            app.ticker.add((delta) => {
+                showReels.update(delta)
+                spin();
+                animateSymbolsTickerCallback();
+            });
+        })
+    }
 }

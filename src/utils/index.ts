@@ -1,13 +1,13 @@
 import { BlurFilter, Container, DisplayObject, Sprite } from "pixi.js";
-import { reelTypes } from "../main";
 import { FINISHED, STARTED, STOPING, WIN, setSpinState } from "./GameStateService";
 import { findWinningPositions } from "./WinnerChecking";
 import { WinnerComboAnimation, clearWinInterval } from "./Animations";
 import { spinSound, winSound } from "./Sounds";
 import player from "./Player";
+import { Reel } from "../../types";
 
 type TweenType = {
-    object: reelTypes,
+    object: Reel,
     property: 'container' | 'symbols' | "position" | "previousPosition" | "blur",
     target: number,
     time: number,
@@ -23,7 +23,7 @@ type TweenTypeDate = TweenType & {
 
 const tweening: TweenTypeDate[] = [];
 
-export function startSpin(reels: reelTypes[]) {
+export function startSpin(reels: Reel[]) {
     // on start spin clear combo winning animations and stop winning sound
     clearWinInterval();
     winSound.stop();
@@ -45,7 +45,7 @@ export function startSpin(reels: reelTypes[]) {
     }
 }
 
-export function stopSpin(reels: reelTypes[]) {
+export function stopSpin(reels: Reel[]) {
     setSpinState(STOPING);
 
     // get previous tweening 
@@ -72,7 +72,7 @@ export function stopSpin(reels: reelTypes[]) {
     }
 }
 
-function reelsSpinComplete(reels: reelTypes[]) {
+function reelsSpinComplete(reels: Reel[]) {
     spinSound.stop()
     const winningPositions = findWinningPositions(reels);
 
