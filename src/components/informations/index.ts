@@ -1,32 +1,73 @@
 import * as PIXI from 'pixi.js';
-import { BORDER_WIDTH, CONTAINER_WIDTH, app } from '../../main';
 import { ToggleSound } from '../ToggleSound';
 import { Bet } from './Bet';
 import { Credit } from './Credit';
+import { Layout } from '@pixi/layout';
 
+export class Informations extends Layout {
+    private bet: PIXI.Container<PIXI.DisplayObject>;
+    private credit: PIXI.Container<PIXI.DisplayObject>;
+    private soundContainer: PIXI.Container<PIXI.DisplayObject>
 
+    constructor() {
+        super({
+        id: "InformationsTab",
+        styles: {
+            maxWidth: '100%',
+            maxHeight: '100%',
+            position: 'bottom',
+        }});
 
-export function Informations() {
-    const infoContainer = new PIXI.Container();
-    infoContainer.position.set(0, app.screen.height - 70);
+        this.bet = Bet();
+        this.credit = new Credit().creditTab;
+        this.soundContainer = ToggleSound();
+        this.createContainer();
+    }
 
-    const infoContainerBg = new PIXI.Graphics()
-    .beginFill(0x331e01)
-    .drawRect(0, 0, app.screen.width, 70);
-
-    const container = new PIXI.Graphics()
-    .beginFill(0x610e00)
-    .drawRoundedRect(0, (infoContainerBg.height / 2) - 50 / 2, CONTAINER_WIDTH * 2, 50, 15);
-    container.position.set( (infoContainerBg.width - container.width) / 2 + BORDER_WIDTH, 0 );
-
-    const credit = new Credit(container.width, container.height);
-    const bet = Bet( container.width, container.height );
-
-    const { soundContainer } = ToggleSound()
-    soundContainer.position.set((container.width- soundContainer.width) / 2, (container.height- soundContainer.height) / 2 + 10)
-
-    container.addChild( credit.creditTab, bet, soundContainer );
-    infoContainer.addChild(infoContainerBg, container);
-
-    return { infoContainer }
+    private createContainer() {
+        this.addContent({
+            content: {
+                infoContainer: {
+                    content: {
+                        background:{
+                            content: new PIXI.Container(),
+                        },
+                        credit: {
+                            content: this.credit,
+                            styles: {
+                                position: 'left',
+                                borderRadius: 20,
+                            }
+                        },
+                        soundContainer: {
+                            content: this.soundContainer,
+                            styles: {
+                                position: 'center',
+                            }
+                        },
+                        bet: {
+                            content: this.bet,
+                            styles: {
+                                position: 'right',
+                                borderRadius: 20,
+                            }
+                        },    
+                    },
+                    styles: {
+                        width: '650px',
+                        maxWidth: '80%',
+                        height: '65%',
+                        background: 0x610e00,
+                        position: 'center',
+                        borderRadius: 15,
+                    }
+                }
+            },
+            styles: {
+                width: '100%',
+                height: '70px',
+                background: 0x331e01,
+            }  
+        });
+    }
 }

@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 
-export function Tab(labelText: string, valueText: string, style: PIXI.TextStyle, containerWidth: number, containerHeight: number) {
+export function Tab(labelText: string, valueText: string, style: PIXI.TextStyle) {
     const tab = new PIXI.Graphics()
     tab.beginFill('transparent')
     .lineStyle(1, 0x6d511f, 1)

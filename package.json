@@ -8,6 +8,8 @@
     "build": "webpack --config ./webpack.common.js"
   },
   "devDependencies": {
+    "@types/find-cache-dir": "^5.0.0",
+    "@types/howler": "^2.2.11",
     "copy-webpack-plugin": "^11.0.0",
     "html-webpack-plugin": "^5.5.4",
     "terser-webpack-plugin": "^5.3.9",
@@ -19,6 +21,7 @@
   },
   "dependencies": {
     "@pixi/filter-drop-shadow": "^5.2.0",
+    "@pixi/layout": "^0.3.8",
     "howler": "^2.2.4",
     "pixi.js": "^7.3.2"
   }

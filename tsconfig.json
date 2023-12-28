@@ -1,12 +1,14 @@
 {
     "compilerOptions": {
-      "target": "es5",
+      "target": "es2015",
       "module": "commonjs",
       "sourceMap": true,
       "strict": true,
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
       "resolveJsonModule": true,
+      "typeRoots": ["node_modules/@types", "path/to/your/types"],
+      "types": ["find-cache-dir"],
     },
-  "include": ["src", "index.d.ts"]
-  }
+  "include": ["src", "index.d.ts", "types.ts"]
+}

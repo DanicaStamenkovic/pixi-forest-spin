@@ -1,5 +1,5 @@
+import { Reel } from "../../types";
 import { winningCombos } from "../constants/WinningCombos";
-import { reelTypes } from "../main";
 import * as PIXI from 'pixi.js';
 
 function checkIfComboIsWinnner(valueMatix: PIXI.Sprite[][], comboMatrix: number[][]) {
@@ -22,7 +22,7 @@ function checkIfComboIsWinnner(valueMatix: PIXI.Sprite[][], comboMatrix: number[
     return Math.min(...flagNumber) === Math.max(...flagNumber) ? returnSymbols.reverse() : []
 }
 
-export function findWinningPositions(reels:reelTypes[]) {
+export function findWinningPositions(reels:Reel[]) {
     //define empty matrix array
     let matrix: PIXI.Sprite[][] = [] 
 
